@@ -1,0 +1,6 @@
+model = "gpt-5.2"
+model_reasoning_effort = "xhigh"
+
+# Reduce approval prompts while keeping commands sandboxed by default.
+ask_for_approval = "on-failure"
+sandbox = "workspace-write"
