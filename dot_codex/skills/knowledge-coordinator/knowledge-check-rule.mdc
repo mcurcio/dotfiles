@@ -1,0 +1,14 @@
+---
+description: At conversation start and after task completion, consider whether knowledge bases (Obsidian, Jira, Confluence) should be updated; offer to run the knowledge coordinator or capture learnings.
+alwaysApply: true
+---
+
+# Knowledge base check
+
+**When:** At the start of a new conversation and at natural break points (e.g. after completing a task, before switching topics).
+
+**Do:** Briefly consider whether anything discussed should be captured or synced to Obsidian, Jira, or Confluence. If yes, offer once: "Should I update your knowledge bases with what we just did?" or "Want me to capture this to Obsidian / Jira / Confluence?"
+
+**How:** If the user says yes, apply the **knowledge-coordinator** skill: triage the information (personal vs public vs both) and invoke **obsidian-knowledge-agent** and/or **public-knowledge-agent** with a clear summary. Do not prompt again in the same conversation unless the user asks.
+
+**Keep it light:** One short offer per break point; do not interrupt mid-task.
