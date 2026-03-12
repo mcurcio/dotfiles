@@ -1,0 +1,9 @@
+IdentityFile /Users/matt/.ssh/hawking
+Host ifit-mac
+	HostName T86643.localdomain
+	IdentityFile /Users/matt/.ssh/ifit.pub
+Host 10.0.2.*
+  User matt
+  IdentityFile ~/.ssh/joule
+  IdentitiesOnly yes
+

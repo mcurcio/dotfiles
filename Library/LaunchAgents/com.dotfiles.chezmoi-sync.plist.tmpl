@@ -10,10 +10,11 @@
 
     <key>ProgramArguments</key>
     <array>
-      <string>/bin/bash</string>
-      <string>-lc</string>
-      <string>~/.local/bin/chezmoi-sync.sh</string>
+      <string>{{ .chezmoi.homeDir }}/.local/bin/chezmoi-sync.sh</string>
     </array>
+
+    <key>WorkingDirectory</key>
+    <string>{{ .chezmoi.homeDir }}</string>
 
     <key>RunAtLoad</key>
     <true/>
@@ -23,6 +24,12 @@
 
     <key>ProcessType</key>
     <string>Background</string>
+
+    <key>StandardOutPath</key>
+    <string>{{ .chezmoi.homeDir }}/Library/Logs/chezmoi-sync.launchd.out.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>{{ .chezmoi.homeDir }}/Library/Logs/chezmoi-sync.launchd.err.log</string>
   </dict>
 </plist>
 {{- end -}}
