@@ -5,3 +5,6 @@ model_reasoning_effort = "high"
 ask_for_approval = "on-failure"
 sandbox = "workspace-write"
 personality = "pragmatic"
+
+[features]
+multi_agent = true
