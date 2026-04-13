@@ -14,3 +14,9 @@ enabled = true
 
 [plugins."google-drive@openai-curated"]
 enabled = true
+
+[plugins."gmail@openai-curated"]
+enabled = true
+
+[projects."/Users/matt/Code/iac"]
+trust_level = "trusted"
