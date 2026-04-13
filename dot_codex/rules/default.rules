@@ -92,3 +92,4 @@ prefix_rule(pattern=["kubectl", "-n", "postgres-system", "get", "pods", "-o", "w
 prefix_rule(pattern=["kubectl", "-n", "postgres-system", "get", "svc"], decision="allow")
 prefix_rule(pattern=["kubectl", "get", "clusters.postgresql.cnpg.io", "-A"], decision="allow")
 prefix_rule(pattern=["kubectl", "-n", "observability", "logs", "pod/grafana-pg-1", "--tail=120"], decision="allow")
+prefix_rule(pattern=["bd", "--help"], decision="allow")
