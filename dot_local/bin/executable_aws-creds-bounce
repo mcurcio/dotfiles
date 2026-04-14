@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+# aws-creds-bounce — triggered when ~/.aws/credentials changes.
+# Only bounces services if credentials were previously expired and have
+# now been refreshed. Routine Leapp rotations (before expiry) are ignored.
+
+set -euo pipefail
+
+LOG_TAG="aws-creds-bounce"
+STATE_FILE="${TMPDIR:-/tmp}/aws-creds-bounce.expired"
+
+log() {
+  logger -t "$LOG_TAG" "$1"
+  echo "$(date '+%Y-%m-%d %H:%M:%S') [$LOG_TAG] $1"
+}
+
+# Debounce: Leapp can write the file multiple times in quick succession.
+STAMP_FILE="${TMPDIR:-/tmp}/aws-creds-bounce.stamp"
+if [[ -f "$STAMP_FILE" ]]; then
+  last=$(stat -f %m "$STAMP_FILE" 2>/dev/null || echo 0)
+  now=$(date +%s)
+  if (( now - last < 10 )); then
+    exit 0
+  fi
+fi
+touch "$STAMP_FILE"
+
+# Test whether current credentials are valid.
+if aws sts get-caller-identity --profile sandbox &>/dev/null; then
+  # Creds are valid now.
+  if [[ -f "$STATE_FILE" ]]; then
+    # We were in an expired state — this is a recovery. Bounce everything.
+    rm -f "$STATE_FILE"
+    log "Credentials recovered from expired state. Bouncing services."
+
+    # Restart OpenClaw gateway
+    if pgrep -q -f openclaw-gateway; then
+      log "Restarting OpenClaw gateway..."
+      openclaw gateway restart 2>&1 | while read -r line; do log "openclaw: $line"; done || true
+    fi
+
+    # Terminate Claude Code CLI processes so they pick up fresh creds on resume
+    claude_pids=$(pgrep -f '^claude --resume' 2>/dev/null || true)
+    if [[ -n "$claude_pids" ]]; then
+      log "Sending SIGTERM to Claude Code CLI processes: $claude_pids"
+      echo "$claude_pids" | xargs kill -TERM 2>/dev/null || true
+    fi
+
+    log "Bounce complete."
+  else
+    # Routine rotation — creds were fine before and still fine now. No-op.
+    log "Credentials rotated (not expired). No bounce needed."
+  fi
+else
+  # Creds are invalid. Record the expired state so we bounce on recovery.
+  if [[ ! -f "$STATE_FILE" ]]; then
+    log "Credentials expired. Marking expired state — will bounce on recovery."
+    touch "$STATE_FILE"
+  fi
+fi

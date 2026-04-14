@@ -1,0 +1,38 @@
+{{- if eq .role "work" -}}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.local.aws-creds-bounce</string>
+
+	<key>ProgramArguments</key>
+	<array>
+		<string>{{ .chezmoi.homeDir }}/.local/bin/aws-creds-bounce</string>
+	</array>
+
+	<key>WatchPaths</key>
+	<array>
+		<string>{{ .chezmoi.homeDir }}/.aws/credentials</string>
+	</array>
+
+	<key>EnvironmentVariables</key>
+	<dict>
+		<key>PATH</key>
+		<string>/usr/local/bin:/usr/bin:/bin:{{ .chezmoi.homeDir }}/.nvm/versions/node/v24.14.0/bin:{{ .chezmoi.homeDir }}/.local/bin</string>
+		<key>HOME</key>
+		<string>{{ .chezmoi.homeDir }}</string>
+		<key>AWS_PROFILE</key>
+		<string>sandbox</string>
+	</dict>
+
+	<key>StandardOutPath</key>
+	<string>{{ .chezmoi.homeDir }}/.local/log/aws-creds-bounce.log</string>
+	<key>StandardErrorPath</key>
+	<string>{{ .chezmoi.homeDir }}/.local/log/aws-creds-bounce.log</string>
+
+	<key>ThrottleInterval</key>
+	<integer>10</integer>
+</dict>
+</plist>
+{{ end -}}

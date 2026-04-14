@@ -1,0 +1,17 @@
+{
+  "description": "Offer knowledge capture at natural break points in conversations",
+  "hooks": {
+    "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "Before stopping, briefly consider: did this conversation produce any reusable knowledge, decisions, or action items that should be captured to the user's knowledge bases (Obsidian for personal notes, Jira/Confluence for team docs)? If yes, include a brief offer in your final message: 'Should I capture any learnings from this session?' If nothing worth capturing, do not mention it. Keep it light — one short sentence, not a lecture.",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}

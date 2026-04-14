@@ -141,8 +141,32 @@ ssh-add ~/.ssh/id_rsa
 ssh-agent -s
 
 {{- if eq .role "work" }}
-# Claude Code + AWS Bedrock (work profile)
+# Claude Code - Global Model References
 export CLAUDE_CODE_USE_BEDROCK=1
-export ANTHROPIC_MODEL='us.anthropic.claude-opus-4-6-v1'
+export ANTHROPIC_DEFAULT_OPUS_MODEL='us.anthropic.claude-opus-4-6-v1'
+export ANTHROPIC_DEFAULT_SONNET_MODEL='us.anthropic.claude-sonnet-4-6'
+export ANTHROPIC_DEFAULT_HAIKU_MODEL='us.anthropic.claude-haiku-4-5-20251001-v1:0'
 export AWS_PROFILE=sandbox
+
+# OpenClaw / LCM
+export LCM_PRUNE_HEARTBEAT_OK=true
+
+source "{{ .chezmoi.homeDir }}/.openclaw/completions/openclaw.zsh"
 {{ end }}
+
+# bun completions
+[ -s "{{ .chezmoi.homeDir }}/.bun/_bun" ] && source "{{ .chezmoi.homeDir }}/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
+
+typeset -g ZSH_SECRETS_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/secrets.d"
+
+if [[ -d "$ZSH_SECRETS_DIR" ]]; then
+  for secret_file in "$ZSH_SECRETS_DIR"/*.zsh(.N); do
+    source "$secret_file"
+  done
+fi
+
+alias claude-mem='{{ .chezmoi.homeDir }}/.bun/bin/bun "{{ .chezmoi.homeDir }}/.claude/plugins/cache/thedotmack/claude-mem/10.5.5/scripts/worker-service.cjs"'

@@ -1,0 +1,49 @@
+" -- General --
+set nocompatible
+set mouse=a
+syntax enable
+set encoding=utf-8
+set number
+set cursorline
+set laststatus=2
+set wildmenu
+set showmatch
+
+" -- Indentation --
+set tabstop=4
+set shiftwidth=4
+set expandtab
+set autoindent
+
+" -- Search --
+set incsearch
+set hlsearch
+set ignorecase
+set smartcase
+
+" -- Color scheme --
+set background=dark
+colorscheme retrobox
+
+" -- Markdown-specific settings --
+autocmd FileType markdown setlocal wrap linebreak
+autocmd FileType markdown setlocal spell spelllang=en_us
+autocmd FileType markdown setlocal conceallevel=0
+autocmd FileType markdown setlocal tabstop=2 shiftwidth=2
+
+" Recognize more markdown file extensions
+autocmd BufNewFile,BufRead *.md,*.mkd,*.markdown set filetype=markdown
+
+" -- Markdown syntax highlighting tweaks --
+highlight link markdownH1 Title
+highlight link markdownH2 Constant
+highlight link markdownH3 Type
+highlight link markdownH4 Special
+highlight markdownBold cterm=bold gui=bold ctermfg=White
+highlight markdownItalic cterm=italic gui=italic ctermfg=LightCyan
+highlight markdownCode ctermfg=Green guifg=#98c379
+highlight markdownCodeBlock ctermfg=Green guifg=#98c379
+highlight markdownUrl ctermfg=Blue guifg=#61afef cterm=underline gui=underline
+highlight markdownListMarker ctermfg=Red guifg=#e06c75
+highlight markdownBlockquote ctermfg=Gray guifg=#5c6370 cterm=italic gui=italic
+highlight SpellBad cterm=undercurl ctermfg=Red

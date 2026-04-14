@@ -1,0 +1,8 @@
+{
+  "name": "matt-knowledge",
+  "description": "Knowledge management across Obsidian (personal) and Jira/Confluence (team), with smart ticket creation and knowledge coordination",
+  "version": "1.0.0",
+  "author": {
+    "name": "Matt Curcio"
+  }
+}
