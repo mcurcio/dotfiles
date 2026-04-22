@@ -1,0 +1,5 @@
+{{ if ne .role "work" }}
+.claude/memory
+.claude/history.jsonl
+.claude/projects
+{{ end }}

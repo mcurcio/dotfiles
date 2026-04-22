@@ -1,0 +1,181 @@
+# Environment
+
+- All repos live under `~/Code`
+
+# Global Preferences
+
+- Use conventional commits (e.g. `feat:`, `fix:`, `chore:`, `docs:`, `refactor:`, `test:`)
+{{- if eq .role "work" }}
+- Always render Jira ticket references as full clickable URLs (e.g. `https://ifitdev.atlassian.net/browse/OPS-3358`), not just ticket keys
+{{- end }}
+
+{{- if eq .role "work" }}
+
+# Knowledge Protocol
+
+The knowledge base lives in `~/.claude/memory/`. It is not optional reference material — it is an active part of every workflow.
+
+## Before Acting (Lookup)
+
+Before starting any non-trivial task, check whether relevant knowledge exists:
+
+- **Designing or building modules/services?** → Read `~/.claude/memory/design-review.md`
+- **Reviewing code or PRs?** → Read `~/.claude/memory/code-review.md`, then `~/.claude/memory/pr-workflow.md`
+- **Creating or updating JIRA tickets?** → Read `~/.claude/memory/jira-workflow.md`
+- **Writing to Obsidian?** → Read `~/.claude/memory/vault-conventions.md`
+- **Capturing knowledge across systems?** → Read `~/.claude/memory/knowledge-capture.md`
+- **Querying or connecting to Snowflake?** → Read `~/.claude/memory/snowflake.md`
+- **Planning work or answering architecture questions?** → Scan the index below for anything relevant before responding
+
+This is not "read if you feel like it." If the task matches a trigger, read the file before producing output.
+
+## After Acting (Capture)
+
+When a conversation produces new knowledge, capture it in the right system:
+
+**Obsidian vault** (domain knowledge — what is true about our systems):
+- Architectural decisions and rationale
+- New patterns, conventions, or gotchas discovered
+- Service behavior, data flow, integration details
+- Anything a future session would need to understand the *domain*
+
+**Claude memory files** (behavioral instructions — how Claude should act):
+- Workflow procedures, checklists, output formats
+- Tool usage patterns, API conventions
+- User preferences that shape Claude's behavior
+- Only update when a *process* changes, not when *knowledge* is learned
+
+**Rule of thumb:** If a human would want to read it outside of Claude, it goes in Obsidian. If it only matters for shaping Claude's behavior, it goes in a memory file.
+
+If you're unsure whether something is worth capturing, ask: "Would a future session benefit from knowing this?" If yes, write it down.
+
+## Knowledge Index
+
+| File | Scope |
+|------|-------|
+| `design-review.md` | Architecture principles, module/service design, design review checklists |
+| `code-review.md` | Code review philosophy, checklist, output format, tone |
+| `pr-workflow.md` | PR lifecycle, GitHub API patterns, worktree setup |
+| `jira-workflow.md` | Ticket creation, triage, templates, Atlassian MCP tools |
+| `vault-conventions.md` | Obsidian vault layout, frontmatter, naming, MCP tools |
+| `knowledge-capture.md` | Cross-system knowledge coordination (Obsidian, Jira, Confluence) |
+| `snowflake.md` | Connection setup, schema, query patterns |
+{{- end }}
+
+# Debugging Discipline
+
+- When something isn't working, verify our own code's interaction patterns first — call ordering, caching, timing — before assuming upstream libraries have bugs.
+- If the data is correct in the database but wrong at runtime, the problem is almost certainly caching or call sequencing, not a bug in the framework reading the data.
+- Reading upstream source code is a last resort, not a first instinct. Most "bugs" are our code calling APIs in the wrong order or missing a side effect.
+
+{{- if eq .role "work" }}
+
+# Architecture & Design Standards
+
+> **Before implementing, read `~/.claude/memory/design-review.md` for the full checklist and principles.**
+
+Before implementing non-trivial features (new modules, services, or multi-file changes):
+
+## Design Before Code
+- Identify module/service boundaries first — what are the units and what does each own?
+- Define interfaces and API contracts between boundaries before writing internals
+- Ask: "If I needed to swap, extend, or reuse this piece independently, could I?"
+
+## Boundary Design (Modules & Services)
+- Each unit should have a narrow public API and hide its internals
+- Depend on abstractions (interfaces/types/contracts), not concrete implementations
+- Co-locate what changes together; separate what changes independently
+- If two units know about each other's internals, the boundary is wrong
+
+## Service Scope
+- One service = one domain. If a service owns unrelated data or logic, it's doing too much.
+- If a proposed feature introduces a second domain into an existing service, flag it:
+  "This sounds like a separate service/domain — should we split it?"
+- Prefer thin inter-service APIs (events, well-typed contracts) over shared databases or direct internal calls
+- New endpoints should fit the service's existing domain language. If naming feels forced, the feature likely belongs elsewhere.
+
+## Reusability by Default
+- Extract shared behavior into composable, single-purpose utilities or shared libraries
+- Prefer parameters and configuration over hard-coded assumptions
+- Design data structures to be passed between boundaries, not reach into them
+
+## When to Push Back
+- If a task implies tight coupling across module or service boundaries, flag it before implementing
+- If adding a feature requires modifying >2 unrelated modules/services, the design may need rethinking — say so
+- If a service is being asked to own data or logic outside its domain, propose a new service boundary instead of expanding scope
+{{- end }}
+
+# Tech Stack
+
+- TypeScript across most repos
+- Mix of npm and yarn — check for `yarn.lock` vs `package-lock.json` to detect the correct package manager
+- Prefer `npm run` / `yarn` scripts over `npx`
+- Python projects: always use `uv` for running scripts, tests, and managing dependencies (e.g. `uv run pytest`, `uv run python`, `uv pip install`). Never use bare `python` or `pip`.
+
+{{- if eq .role "work" }}
+
+# Code Review
+
+> **Before any review, read `~/.claude/memory/code-review.md` first. For PR workflows, also read `~/.claude/memory/pr-workflow.md`.**
+
+- When reviewing PRs for local repos, prefer checking out the branch with `git` rather than making repeated `gh api` / blob reads — the repo is already on disk
+- Write review comments in a human voice — positive, constructive, and solution-oriented
+- Always suffix PR review comments with `[ai authored; matt approved]`
+{{- end }}
+
+# Git Rebase
+
+- When rebasing a PR branch, always start from a clean fork of the remote: `git reset --hard origin/<branch>` before rebasing. Never rebase from local branch state — it may be stale or diverged, leading to unnecessary force pushes.
+- Fetch the remote branch and base branch before starting: `git fetch origin <base> <head>`
+
+{{- if eq .role "work" }}
+
+# Git Worktrees
+
+- Use worktrees for PR reviews and any work that shouldn't disturb the current branch
+- Worktree base path: `~/Code/.worktrees/<repo-name>/<branch-name>`
+- Always clean up worktrees after the review/task is complete
+
+# JIRA
+
+> **Before creating or updating tickets, read `~/.claude/memory/jira-workflow.md`.**
+
+# Obsidian & Knowledge Capture
+
+> **Before writing to the vault, read `~/.claude/memory/vault-conventions.md`. For cross-system capture, read `~/.claude/memory/knowledge-capture.md`.**
+
+# Snowflake
+
+> **Before querying or connecting, read `~/.claude/memory/snowflake.md`.**
+
+# Permissions Philosophy
+
+- Globally whitelist read-only / idempotent / benign CLI operations in `~/.claude/settings.json` so they never prompt (e.g. `git status`, `gh pr view`, `npm list`)
+- Never whitelist commands that mutate remote state (push, merge, create, delete, comment, `gh api` with POST/PUT/DELETE)
+
+## Proactive Allow List Management
+
+When a tool call gets denied or requires manual approval, evaluate whether it should be added to `~/.claude/settings.json`:
+
+- **Read-only / query tools** → Suggest adding immediately. These are always safe.
+- **Local writes with low blast radius** (e.g., Obsidian note edits, file writes within `~/Code/`) → Suggest adding with a specific scope. Explain what the permission covers.
+- **Scoped mutations** (e.g., Jira comment on a specific project, git commit) → Suggest only if the user has approved the same action 2+ times. Propose the narrowest scope possible.
+- **Remote/destructive mutations** (push, delete, merge, create PR) → Never suggest. These always require manual approval.
+
+**Format:** When suggesting, show the exact line to add:
+```
+Suggest adding to ~/.claude/settings.json allow list:
+  "mcp__obsidian__write_note"
+Reason: needed for knowledge capture workflow; writes only to your local Obsidian vault
+```
+
+Do not batch suggestions. Suggest one permission at a time so each can be evaluated independently.
+
+# Superpowers Plugin Overrides
+
+- Save superpowers specs to `~/Sync/iFIT/claude/superpowers/specs/` instead of `docs/superpowers/specs/`
+- Save superpowers plans to `~/Sync/iFIT/claude/superpowers/plans/` instead of `docs/superpowers/plans/`
+{{- end }}
+<!-- lcm:start -->
+<!-- Claude Code include: @lcm.md -->
+<!-- lcm:end -->
