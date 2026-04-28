@@ -1,0 +1,52 @@
+{{- $gt := lookPath "gt" -}}
+{{- if $gt -}}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+ "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Label</key>
+	<string>com.gastown.dashboard</string>
+
+	<key>ProgramArguments</key>
+	<array>
+		<string>{{ $gt }}</string>
+		<string>dashboard</string>
+		<string>--port</string>
+		<string>8765</string>
+	</array>
+
+	<key>WorkingDirectory</key>
+	<string>{{ .chezmoi.homeDir }}/gt</string>
+
+	<key>EnvironmentVariables</key>
+	<dict>
+		<key>PATH</key>
+		<string>/opt/homebrew/bin:{{ .chezmoi.homeDir }}/.local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+		<key>HOME</key>
+		<string>{{ .chezmoi.homeDir }}</string>
+		<key>GT_TOWN_ROOT</key>
+		<string>{{ .chezmoi.homeDir }}/gt</string>
+		<key>BEADS_DOLT_HOST</key>
+		<string>127.0.0.1</string>
+		<key>BEADS_DOLT_PORT</key>
+		<string>3307</string>
+	</dict>
+
+	<key>RunAtLoad</key>
+	<true/>
+
+	<key>KeepAlive</key>
+	<true/>
+
+	<key>ProcessType</key>
+	<string>Background</string>
+
+	<key>StandardOutPath</key>
+	<string>{{ .chezmoi.homeDir }}/Library/Logs/gastown-dashboard.out.log</string>
+
+	<key>StandardErrorPath</key>
+	<string>{{ .chezmoi.homeDir }}/Library/Logs/gastown-dashboard.err.log</string>
+</dict>
+</plist>
+{{- end -}}

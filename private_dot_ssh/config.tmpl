@@ -1,0 +1,10 @@
+{{ if eq .role "personal" -}}
+IdentityFile {{ .chezmoi.homeDir }}/.ssh/hawking
+{{ end -}}
+Host ifit-mac
+	HostName T86643.localdomain
+	IdentityFile {{ .chezmoi.homeDir }}/.ssh/ifit_signing_key
+Host 10.0.2.*
+  User matt
+  IdentityFile ~/.ssh/joule
+  IdentitiesOnly yes
