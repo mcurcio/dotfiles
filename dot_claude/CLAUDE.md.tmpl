@@ -1,181 +1,223 @@
+> **Managed by chezmoi** — edit `~/.local/share/chezmoi/dot_claude/CLAUDE.md.tmpl`, not this file.
+
 # Environment
 
 - All repos live under `~/Code`
 
 # Global Preferences
 
-- Use conventional commits (e.g. `feat:`, `fix:`, `chore:`, `docs:`, `refactor:`, `test:`)
+- Conventional commits (`feat:`, `fix:`, `chore:`, `docs:`, `refactor:`, `test:`)
 {{- if eq .role "work" }}
-- Always render Jira ticket references as full clickable URLs (e.g. `https://ifitdev.atlassian.net/browse/OPS-3358`), not just ticket keys
+- Render Jira tickets as full URLs: `https://ifitdev.atlassian.net/browse/OPS-3358`
 {{- end }}
 
-{{- if eq .role "work" }}
+## Writing Style (Skills, Prompts, CLAUDE.md, Memory)
+
+Minimize tokens. Every word costs context.
+
+- State the positive action, not the negative + alternative
+- Drop filler: no "Please note that", "Make sure to", "You should always"
+- One concept per bullet — split on "and" or ";"
+- Don't restate what tools/context already provide
+- When editing instructions, compress to this standard
 
 # Knowledge Protocol
 
-The knowledge base lives in `~/.claude/memory/`. It is not optional reference material — it is an active part of every workflow.
+`~/.claude/memory/` is mandatory, not reference material.
 
 ## Before Acting (Lookup)
 
-Before starting any non-trivial task, check whether relevant knowledge exists:
+If the task matches a trigger, read the file before producing output:
 
-- **Designing or building modules/services?** → Read `~/.claude/memory/design-review.md`
-- **Reviewing code or PRs?** → Read `~/.claude/memory/code-review.md`, then `~/.claude/memory/pr-workflow.md`
-- **Creating or updating JIRA tickets?** → Read `~/.claude/memory/jira-workflow.md`
-- **Writing to Obsidian?** → Read `~/.claude/memory/vault-conventions.md`
-- **Capturing knowledge across systems?** → Read `~/.claude/memory/knowledge-capture.md`
-- **Querying or connecting to Snowflake?** → Read `~/.claude/memory/snowflake.md`
-- **Planning work or answering architecture questions?** → Scan the index below for anything relevant before responding
-
-This is not "read if you feel like it." If the task matches a trigger, read the file before producing output.
+| Trigger | Read |
+|---------|------|
+| Module/service design | `design-review.md` |
+| Code or PR review | `code-review.md`, `pr-workflow.md` |
+| Jira tickets | `jira-workflow.md` |
+| Obsidian writes | `vault-conventions.md` |
+| Cross-system capture | `knowledge-capture.md` |
+| Snowflake | `snowflake.md` |
+| Architecture questions | Scan the index for anything relevant |
 
 ## After Acting (Capture)
 
-When a conversation produces new knowledge, capture it in the right system:
+**Obsidian vault** — domain knowledge (what is true about our systems):
+- Architecture decisions, patterns, gotchas, service behavior, data flows
 
-**Obsidian vault** (domain knowledge — what is true about our systems):
-- Architectural decisions and rationale
-- New patterns, conventions, or gotchas discovered
-- Service behavior, data flow, integration details
-- Anything a future session would need to understand the *domain*
+**Claude memory** — behavioral instructions (how Claude should act):
+- Workflows, checklists, tool patterns, user preferences
+- Update only when a *process* changes, not when *knowledge* is learned
 
-**Claude memory files** (behavioral instructions — how Claude should act):
-- Workflow procedures, checklists, output formats
-- Tool usage patterns, API conventions
-- User preferences that shape Claude's behavior
-- Only update when a *process* changes, not when *knowledge* is learned
-
-**Rule of thumb:** If a human would want to read it outside of Claude, it goes in Obsidian. If it only matters for shaping Claude's behavior, it goes in a memory file.
-
-If you're unsure whether something is worth capturing, ask: "Would a future session benefit from knowing this?" If yes, write it down.
+**Rule:** Human-readable outside Claude → Obsidian. Only shapes Claude behavior → memory file.
 
 ## Knowledge Index
 
 | File | Scope |
 |------|-------|
-| `design-review.md` | Architecture principles, module/service design, design review checklists |
-| `code-review.md` | Code review philosophy, checklist, output format, tone |
-| `pr-workflow.md` | PR lifecycle, GitHub API patterns, worktree setup |
-| `jira-workflow.md` | Ticket creation, triage, templates, Atlassian MCP tools |
-| `vault-conventions.md` | Obsidian vault layout, frontmatter, naming, MCP tools |
-| `knowledge-capture.md` | Cross-system knowledge coordination (Obsidian, Jira, Confluence) |
-| `snowflake.md` | Connection setup, schema, query patterns |
-{{- end }}
+| `design-review.md` | Architecture principles, design checklists |
+| `code-review.md` | Review philosophy, checklist, output format |
+| `pr-workflow.md` | PR lifecycle, GitHub patterns, worktrees |
+| `jira-workflow.md` | Ticket creation, triage, templates |
+| `vault-conventions.md` | Vault layout, frontmatter, naming |
+| `knowledge-capture.md` | Cross-system coordination |
+| `snowflake.md` | Connection, schema, query patterns |
 
 # Debugging Discipline
 
-- When something isn't working, verify our own code's interaction patterns first — call ordering, caching, timing — before assuming upstream libraries have bugs.
-- If the data is correct in the database but wrong at runtime, the problem is almost certainly caching or call sequencing, not a bug in the framework reading the data.
-- Reading upstream source code is a last resort, not a first instinct. Most "bugs" are our code calling APIs in the wrong order or missing a side effect.
+- Verify our code's interaction patterns (call ordering, caching, timing) before suspecting upstream bugs
+- Reading upstream source is a last resort — most "bugs" are our code calling APIs wrong
 
 {{- if eq .role "work" }}
 
 # Architecture & Design Standards
 
-> **Before implementing, read `~/.claude/memory/design-review.md` for the full checklist and principles.**
-
-Before implementing non-trivial features (new modules, services, or multi-file changes):
+> Read `~/.claude/memory/design-review.md` before implementing non-trivial features.
 
 ## Design Before Code
-- Identify module/service boundaries first — what are the units and what does each own?
-- Define interfaces and API contracts between boundaries before writing internals
-- Ask: "If I needed to swap, extend, or reuse this piece independently, could I?"
+- Identify module/service boundaries and ownership first
+- Define interfaces between boundaries before writing internals
+- Test: "Can I swap, extend, or reuse this piece independently?"
 
-## Boundary Design (Modules & Services)
-- Each unit should have a narrow public API and hide its internals
-- Depend on abstractions (interfaces/types/contracts), not concrete implementations
+## Boundary Design
+- Narrow public APIs, hidden internals
+- Depend on abstractions, not concrete implementations
 - Co-locate what changes together; separate what changes independently
-- If two units know about each other's internals, the boundary is wrong
 
 ## Service Scope
-- One service = one domain. If a service owns unrelated data or logic, it's doing too much.
-- If a proposed feature introduces a second domain into an existing service, flag it:
-  "This sounds like a separate service/domain — should we split it?"
-- Prefer thin inter-service APIs (events, well-typed contracts) over shared databases or direct internal calls
-- New endpoints should fit the service's existing domain language. If naming feels forced, the feature likely belongs elsewhere.
+- One service = one domain — flag features that introduce a second domain
+- Prefer thin inter-service APIs (events, typed contracts) over shared DBs or direct calls
+- If naming an endpoint feels forced, the feature belongs elsewhere
 
-## Reusability by Default
-- Extract shared behavior into composable, single-purpose utilities or shared libraries
-- Prefer parameters and configuration over hard-coded assumptions
-- Design data structures to be passed between boundaries, not reach into them
-
-## When to Push Back
-- If a task implies tight coupling across module or service boundaries, flag it before implementing
-- If adding a feature requires modifying >2 unrelated modules/services, the design may need rethinking — say so
-- If a service is being asked to own data or logic outside its domain, propose a new service boundary instead of expanding scope
+## Push Back When
+- A task implies tight coupling across boundaries
+- A feature requires modifying >2 unrelated modules
+- A service is asked to own logic outside its domain — propose a new boundary
 {{- end }}
 
 # Tech Stack
 
 - TypeScript across most repos
-- Mix of npm and yarn — check for `yarn.lock` vs `package-lock.json` to detect the correct package manager
-- Prefer `npm run` / `yarn` scripts over `npx`
-- Python projects: always use `uv` for running scripts, tests, and managing dependencies (e.g. `uv run pytest`, `uv run python`, `uv pip install`). Never use bare `python` or `pip`.
+- Detect package manager: `yarn.lock` → yarn, `package-lock.json` → npm
+- Never use `npx` — use `npm run`/`yarn` scripts; add a new script to `package.json` if none exists
+- Python: use `uv` for everything (`uv run pytest`, `uv pip install`) — never bare `python`/`pip`
+- JSON processing: use `jq` — never `python -m json.tool`
 
 {{- if eq .role "work" }}
 
 # Code Review
 
-> **Before any review, read `~/.claude/memory/code-review.md` first. For PR workflows, also read `~/.claude/memory/pr-workflow.md`.**
-
-- When reviewing PRs for local repos, prefer checking out the branch with `git` rather than making repeated `gh api` / blob reads — the repo is already on disk
-- Write review comments in a human voice — positive, constructive, and solution-oriented
-- Always suffix PR review comments with `[ai authored; matt approved]`
+- Check out PR branches locally rather than repeated `gh api` / blob reads
+- Human voice — positive, constructive, solution-oriented
+- Suffix comments with `[ai authored; matt approved]`
 {{- end }}
 
-# Git Rebase
+# Git
 
-- When rebasing a PR branch, always start from a clean fork of the remote: `git reset --hard origin/<branch>` before rebasing. Never rebase from local branch state — it may be stale or diverged, leading to unnecessary force pushes.
-- Fetch the remote branch and base branch before starting: `git fetch origin <base> <head>`
+## Rebase
+- Fetch both branches first: `git fetch origin <base> <head>`
+- Start from remote: `git reset --hard origin/<branch>` before rebasing
 
 {{- if eq .role "work" }}
 
-# Git Worktrees
+## Worktrees
+- Use for PR reviews and work that shouldn't disturb the current branch
+- Path: `~/Code/.worktrees/<repo-name>/<branch-name>`
+- Clean up after task completion
+{{- end }}
 
-- Use worktrees for PR reviews and any work that shouldn't disturb the current branch
-- Worktree base path: `~/Code/.worktrees/<repo-name>/<branch-name>`
-- Always clean up worktrees after the review/task is complete
+# Permissions
 
-# JIRA
-
-> **Before creating or updating tickets, read `~/.claude/memory/jira-workflow.md`.**
-
-# Obsidian & Knowledge Capture
-
-> **Before writing to the vault, read `~/.claude/memory/vault-conventions.md`. For cross-system capture, read `~/.claude/memory/knowledge-capture.md`.**
-
-# Snowflake
-
-> **Before querying or connecting, read `~/.claude/memory/snowflake.md`.**
-
-# Permissions Philosophy
-
-- Globally whitelist read-only / idempotent / benign CLI operations in `~/.claude/settings.json` so they never prompt (e.g. `git status`, `gh pr view`, `npm list`)
-- Never whitelist commands that mutate remote state (push, merge, create, delete, comment, `gh api` with POST/PUT/DELETE)
+- Whitelist read-only/idempotent operations in `~/.claude/settings.json`
+- Never whitelist remote-mutating commands (push, merge, create, delete, POST/PUT/DELETE)
 
 ## Proactive Allow List Management
 
-When a tool call gets denied or requires manual approval, evaluate whether it should be added to `~/.claude/settings.json`:
+When a tool call requires approval, evaluate:
 
-- **Read-only / query tools** → Suggest adding immediately. These are always safe.
-- **Local writes with low blast radius** (e.g., Obsidian note edits, file writes within `~/Code/`) → Suggest adding with a specific scope. Explain what the permission covers.
-- **Scoped mutations** (e.g., Jira comment on a specific project, git commit) → Suggest only if the user has approved the same action 2+ times. Propose the narrowest scope possible.
-- **Remote/destructive mutations** (push, delete, merge, create PR) → Never suggest. These always require manual approval.
+- **Read-only** → suggest adding immediately
+- **Local writes, low blast radius** → suggest with specific scope
+- **Scoped mutations** → suggest only after 2+ manual approvals, narrowest scope
+- **Remote/destructive** → never suggest
 
-**Format:** When suggesting, show the exact line to add:
-```
-Suggest adding to ~/.claude/settings.json allow list:
-  "mcp__obsidian__write_note"
-Reason: needed for knowledge capture workflow; writes only to your local Obsidian vault
-```
+Show the exact line and reason. One suggestion at a time.
 
-Do not batch suggestions. Suggest one permission at a time so each can be evaluated independently.
+{{- if eq .role "work" }}
 
 # Superpowers Plugin Overrides
 
-- Save superpowers specs to `~/Sync/iFIT/claude/superpowers/specs/` instead of `docs/superpowers/specs/`
-- Save superpowers plans to `~/Sync/iFIT/claude/superpowers/plans/` instead of `docs/superpowers/plans/`
+- Specs: `~/Sync/iFIT/claude/superpowers/specs/`
+- Plans: `~/Sync/iFIT/claude/superpowers/plans/`
 {{- end }}
+
+<team_management>
+
+# Agent Team Management
+
+## Agent Definitions
+
+Custom agents in `~/.claude/agents/`. Use as `subagent_type`:
+
+| Agent | Role |
+|---|---|
+| `requirements` | Requirements, acceptance criteria, test cases. First in triad. Technology-agnostic. |
+| `system-architect` | System shape: boundaries, internal structure, protocols, state machines. Design docs only. |
+| `code-architect` | Delivery and maintainability: build strategy, dependency health, testability. Interface definitions only. |
+| `verifier` | Tests, reviews, bug hunting, build verification. Ad-hoc use. |
+| `ts-implementer` | TypeScript/Node.js production code |
+| `infra-implementer` | Python, Bash, Docker, YAML, Makefile |
+| `facilitator` | Task decomposition, routing, progress tracking (no Edit/Write) |
+
+Use custom agents for team work — never `general-purpose`.
+
+## Terminology
+
+- **Team**: persistent session team. Main agent = team lead/orchestrator.
+- **Subteam**: ephemeral agents for a specific phase. Created, work, report, shut down.
+- **Triad**: requirements + sys-arch + code-arch. Owns requirements, design, implementation oversight.
+
+## Spawning Agents
+
+```
+Agent({
+  name: "sys-arch",
+  subagent_type: "system-architect",
+  mode: "bypassPermissions",
+  model: "opus",
+  run_in_background: true,
+  prompt: "... self-contained instructions ..."
+})
+```
+
+Required on every spawn:
+- `model: "opus"` — default resolution picks unavailable versions. `"sonnet"` only for trivial changes.
+- `mode: "bypassPermissions"` — `"auto"` still triggers prompts.
+- `run_in_background: true`
+
+## Implementation Protocol
+
+Use the **swarm plugin**: `/swarm:design`, `/swarm:plan`, `/swarm:implement`, `/swarm:status`.
+
+## Management Discipline
+
+- **Team lead never writes production code.** Dispatch subteams, track tasks, manage `~/.claude/` files only.
+- **Never take over for struggling agents.** Shut down and respawn, or escalate. Reading implementation files corrupts the orchestrator's context.
+- **Escalate, don't absorb.** If respawning can't fix it, report: what failed, what was tried, what decision is needed.
+- **No inline subagents.** All work goes through named team members via SendMessage.
+- **Absolute paths only.** `~` and `$HOME` are not expanded by Read/Edit/Write.
+- **Self-contained prompts.** Include: what to do, which files (absolute paths), how to verify, what NOT to do, who to notify.
+
+## Roster Hygiene
+
+Dead agents leave entries in `~/.claude/teams/<name>/config.json`. On "Failed to create iTerm2 split pane": edit config.json, remove dead members. If still failing, close zombie panes or restart iTerm2.
+
+## Agent Health
+
+Agents die silently. Proactive detection:
+- No output within ~5 min → ping
+- No response to ping within ~2 min → assume dead, respawn
+- On context compaction: shut down orphaned agents before spawning replacements
+
+</team_management>
 <!-- lcm:start -->
 <!-- Claude Code include: @lcm.md -->
 <!-- lcm:end -->

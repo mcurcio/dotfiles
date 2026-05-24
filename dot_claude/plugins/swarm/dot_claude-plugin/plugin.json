@@ -1,0 +1,8 @@
+{
+  "name": "swarm",
+  "version": "0.3.0",
+  "description": "Multi-agent team orchestration with requirements-driven triad, iterative design, and replacement-loop implementation",
+  "author": {
+    "name": "Matt Curcio"
+  }
+}

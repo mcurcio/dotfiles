@@ -1,0 +1,7 @@
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+# Auto-use .nvmrc in non-interactive shells (Claude Code, scripts, git hooks).
+# nvm_find_nvmrc walks up from CWD — same logic the oh-my-zsh nvm plugin uses.
+typeset -f nvm_find_nvmrc >/dev/null 2>&1 && [ -n "$(nvm_find_nvmrc)" ] && nvm use --silent 2>/dev/null

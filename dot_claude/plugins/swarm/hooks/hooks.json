@@ -1,0 +1,17 @@
+{
+  "description": "Swarm lifecycle hooks: session_id bootstrap and orchestrator write guard",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $CLAUDE_PLUGIN_ROOT/hooks/scripts/bootstrap-session-id.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PreToolUse": []
+  }
+}

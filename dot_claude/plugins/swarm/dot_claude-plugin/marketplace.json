@@ -1,0 +1,15 @@
+{
+  "name": "local",
+  "description": "Local custom plugins",
+  "owner": {
+    "name": "Matt Curcio"
+  },
+  "plugins": [
+    {
+      "name": "swarm",
+      "description": "Multi-agent team orchestration with advisory triad, iterative design, and replacement-loop implementation",
+      "source": "./",
+      "version": "0.1.0"
+    }
+  ]
+}
