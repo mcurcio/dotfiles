@@ -3,3 +3,29 @@
 .claude/history.jsonl
 .claude/projects
 {{ end }}
+
+# Ephemeral Claude runtime state — never track
+.claude/sessions
+.claude/session-env
+.claude/shell-snapshots
+.claude/file-history
+.claude/paste-cache
+.claude/tasks
+.claude/debug
+.claude/backups
+.claude/cache
+.claude/downloads
+.claude/ide
+.claude/plans
+.claude/swarm
+.claude/.last-cleanup
+.claude/policy-limits.json
+.claude/settings.local.json
+.claude/plugins/cache
+.claude/plugins/data
+.claude/plugins/install-counts-cache.json
+.claude/plugins/installed_plugins.json
+.claude/plugins/known_marketplaces.json
+.claude/plugins/marketplaces
+.claude/teams
+
