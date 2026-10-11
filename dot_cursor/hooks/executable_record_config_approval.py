@@ -6,7 +6,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Dict
 
-STATE_DIR = Path("/Users/matt.curcio/.cursor/hooks/state")
+STATE_DIR = Path.home() / ".cursor" / "hooks" / "state"
 APPROVALS_PATH = STATE_DIR / "approvals.json"
 
 

@@ -5,7 +5,14 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, Optional
 
-APPROVALS_PATH = Path("/Users/matt.curcio/.cursor/hooks/state/approvals.json")
+CURSOR_HOME = Path.home() / ".cursor"
+APPROVALS_PATH = CURSOR_HOME / "hooks" / "state" / "approvals.json"
+PROJECT_CURSOR_PREFIXES = (
+    ".cursor/rules/",
+    ".cursor/agents/",
+    ".cursor/skills/",
+    ".cursor/hooks/",
+)
 
 
 def _safe_json_load(path: Path) -> Dict[str, Any]:
@@ -35,16 +42,18 @@ def _get_path(tool_input: Any) -> Optional[str]:
 
 
 def _is_sensitive_path(path: str) -> bool:
-    p = path
+    p = str(Path(path).expanduser())
 
     # User-level Cursor config
-    if p.startswith("/Users/matt.curcio/.cursor/"):
+    if p == str(CURSOR_HOME) or p.startswith(f"{CURSOR_HOME}/"):
         return True
 
     # Project-level Cursor config
-    if "/.cursor/" in p:
+    if p == ".cursor" or p.startswith(".cursor/") or "/.cursor/" in p:
         # focus on rules/hooks/agents/skills inside project
         if any(seg in p for seg in ("/.cursor/rules/", "/.cursor/agents/", "/.cursor/skills/", "/.cursor/hooks")):
+            return True
+        if p.startswith(".cursor/") and any(p.startswith(prefix) for prefix in PROJECT_CURSOR_PREFIXES):
             return True
 
     return False

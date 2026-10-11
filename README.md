@@ -12,18 +12,21 @@ Managed with [chezmoi](https://www.chezmoi.io/).
 ## TL;DR Cheat Sheet
 
 ```bash
+# Show common commands
+make help
+
 # Pull and apply latest changes
-chezmoi update
+make update
 
 # See what the background autosync most recently decided
-cat ~/Library/Application\ Support/chezmoi-sync/status.txt
+make sync-status
 
 # Inspect local drift
-chezmoi status --path-style absolute
+make status
 
 # Add/update a managed file
 chezmoi add ~/.zshrc
-chezmoi apply
+make apply
 
 # Commit and publish
 cd "$(chezmoi source-path)"
@@ -34,14 +37,13 @@ git push
 
 Auto-sync diagnostics:
 ```bash
+make sync-status
+make sync-resolution
+make sync-log
 launchctl print "gui/$(id -u)/com.dotfiles.chezmoi-sync"
-cat ~/Library/Application\ Support/chezmoi-sync/status.txt
-cat ~/Library/Application\ Support/chezmoi-sync/resolution.txt
-tail -n 100 ~/Library/Logs/chezmoi-sync.latest.log
-tail -n 100 ~/Library/Logs/chezmoi-sync.launchd.err.log
 
 # Preview the autosync decision tree without changing files
-CHEZMOI_SYNC_DRY_RUN=1 ~/.local/bin/chezmoi-sync.sh
+make dry-run-sync
 ```
 
 ## Bootstrap
@@ -60,8 +62,7 @@ Create `~/.config/chezmoi/chezmoi.toml`:
 ```toml
 [data]
 autosync = true
-profile = "personal"
-profiles = ["personal"]
+role = "personal"
 
 [data.features]
 shairport = false
@@ -78,7 +79,19 @@ chezmoi diff
 
 ### Sync from cloud
 ```bash
-chezmoi update
+make update
+```
+
+### Use the Makefile wrappers
+The repo now includes a small `Makefile` for the commands you run often by hand or want an AI tool to discover quickly.
+
+```bash
+make help
+make doctor
+make diff
+make apply
+make update
+make dry-run-sync
 ```
 
 ### Understand the background autosync loop
@@ -132,23 +145,25 @@ If background autosync is enabled, the same drift should usually be captured and
 ## Advanced Configuration
 
 ### Profile and feature model
-- `profiles`: identity/context tags (examples: `personal`, `work`, `macbook`, `homelab`)
+- `role`: primary machine context (examples: `personal`, `work`)
+- `profiles`: optional additional tags if you want multi-profile matching later
 - `features.*`: capability toggles (examples: `shairport`, `k8s`)
 
 Example:
 ```toml
 [data]
-profiles = ["personal", "work", "client-acme"]
+role = "work"
+profiles = ["client-acme"]
 
 [data.features]
 shairport = true
 ```
 
 ### Adding a profile
-1. Add the new tag to `profiles` in `~/.config/chezmoi/chezmoi.toml`.
+1. Set `role` for the main machine context and optionally add tags to `profiles`.
 2. Apply:
 ```bash
-chezmoi apply
+make apply
 ```
 
 ### Multi-profile machines
