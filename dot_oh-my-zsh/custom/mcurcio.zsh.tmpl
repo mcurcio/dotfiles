@@ -37,10 +37,6 @@ if python3 -c 'import certifi' 2>/dev/null; then
   export REQUESTS_CA_BUNDLE="$_ifit_ca_bundle"
 fi
 
-# Claude Code + AWS Bedrock (work profile)
-export CLAUDE_CODE_USE_BEDROCK=1
+# Claude Code (work profile)
 export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
-export ANTHROPIC_DEFAULT_OPUS_MODEL='global.anthropic.claude-opus-4-8'
-export ANTHROPIC_DEFAULT_SONNET_MODEL='global.anthropic.claude-sonnet-4-6'
-export ANTHROPIC_DEFAULT_HAIKU_MODEL='global.anthropic.claude-haiku-4-5-20251001-v1:0'
 {{ end }}

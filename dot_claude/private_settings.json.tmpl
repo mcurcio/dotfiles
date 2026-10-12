@@ -1,8 +1,5 @@
 {
   "env": {
-{{- if eq .role "work" }}
-    "AWS_BEARER_TOKEN_BEDROCK": "{{ .secrets.aws_bedrock_token }}",
-{{- end }}
     "CLAUDE_CODE_AUTO_COMPACT_WINDOW": "200000",
     "CLAUDE_AUTOCOMPACT_PCT_OVERRIDE": "75"
   },
