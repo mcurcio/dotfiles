@@ -69,11 +69,9 @@ If the task matches a trigger, read the file before producing output:
 - Verify our code's interaction patterns (call ordering, caching, timing) before suspecting upstream bugs
 - Reading upstream source is a last resort — most "bugs" are our code calling APIs wrong
 
-{{- if eq .role "work" }}
-
 # Architecture & Design Standards
 
-> Read `~/.claude/memory/design-review.md` before implementing non-trivial features.
+> Read `~/.claude/design-review.md` before implementing non-trivial features.
 
 ## Design Before Code
 - Identify module/service boundaries and ownership first
@@ -94,7 +92,6 @@ If the task matches a trigger, read the file before producing output:
 - A task implies tight coupling across boundaries
 - A feature requires modifying >2 unrelated modules
 - A service is asked to own logic outside its domain — propose a new boundary
-{{- end }}
 
 # Tech Stack
 
@@ -104,14 +101,11 @@ If the task matches a trigger, read the file before producing output:
 - Python: use `uv` for everything (`uv run pytest`, `uv pip install`) — never bare `python`/`pip`
 - JSON processing: use `jq` — never `python -m json.tool`
 
-{{- if eq .role "work" }}
-
 # Code Review
 
 - Check out PR branches locally rather than repeated `gh api` / blob reads
 - Human voice — positive, constructive, solution-oriented
 - Suffix comments with `[ai authored; matt approved]`
-{{- end }}
 
 # Git
 
@@ -119,13 +113,10 @@ If the task matches a trigger, read the file before producing output:
 - Fetch both branches first: `git fetch origin <base> <head>`
 - Start from remote: `git reset --hard origin/<branch>` before rebasing
 
-{{- if eq .role "work" }}
-
 ## Worktrees
 - Use for PR reviews and work that shouldn't disturb the current branch
 - Path: `~/Code/.worktrees/<repo-name>/<branch-name>`
 - Clean up after task completion
-{{- end }}
 
 # Permissions
 
