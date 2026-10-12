@@ -20,7 +20,7 @@ Minimize tokens. Every word costs context.
 
 # Knowledge Protocol
 
-`~/.claude/memory/` is mandatory, not reference material.
+These files are mandatory, not reference material.
 
 ## Before Acting (Lookup)
 
@@ -28,37 +28,15 @@ If the task matches a trigger, read the file before producing output:
 
 | Trigger | Read |
 |---------|------|
-| Module/service design | `design-review.md` |
-| Code or PR review | `code-review.md`, `pr-workflow.md` |
-| Jira tickets | `jira-workflow.md` |
-| Obsidian writes | `vault-conventions.md` |
-| Cross-system capture | `knowledge-capture.md` |
-| Snowflake | `snowflake.md` |
+| Module/service design | `~/.claude/design-review.md` |
 | Writing/reviewing TypeScript | `~/.claude/coding-standards/typescript/conventions.md` |
 | Architecture questions | Scan the index for anything relevant |
-
-## After Acting (Capture)
-
-**Obsidian vault** — domain knowledge (what is true about our systems):
-- Architecture decisions, patterns, gotchas, service behavior, data flows
-
-**Claude memory** — behavioral instructions (how Claude should act):
-- Workflows, checklists, tool patterns, user preferences
-- Update only when a *process* changes, not when *knowledge* is learned
-
-**Rule:** Human-readable outside Claude → Obsidian. Only shapes Claude behavior → memory file.
 
 ## Knowledge Index
 
 | File | Scope |
 |------|-------|
-| `design-review.md` | Architecture principles, design checklists |
-| `code-review.md` | Review philosophy, checklist, output format |
-| `pr-workflow.md` | PR lifecycle, GitHub patterns, worktrees |
-| `jira-workflow.md` | Ticket creation, triage, templates |
-| `vault-conventions.md` | Vault layout, frontmatter, naming |
-| `knowledge-capture.md` | Cross-system coordination |
-| `snowflake.md` | Connection, schema, query patterns |
+| `~/.claude/design-review.md` | Architecture principles, design checklists |
 | `~/.claude/coding-standards/` | Language-organized coding standards (TypeScript conventions + portable eslint config) |
 
 # Debugging Discipline

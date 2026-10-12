@@ -197,7 +197,7 @@ Guidelines:
 
 Maintainer note: keep this section aligned with actual capabilities.
 
-### AI Development Skills and Agent Configuration (Codex, Cursor, Windsurf, Codeium)
+### AI Development Skills and Agent Configuration (Codex, Windsurf, Codeium)
 Shared agent/skill/rule setup keeps AI assistants aligned across tools so prompts, workflows, and behavior remain consistent.
 
 ### Guardrailed Configuration and Knowledge Writes

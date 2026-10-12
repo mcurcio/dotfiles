@@ -46,8 +46,6 @@ Return findings as a structured list. Each finding includes:
 - **Evidence**: `<doc> — <section>` — "quote"
 - **Comment**: question-first phrasing; propose a concrete alternative or next step when helpful
 
-Use the same brief/structured output modes as code review (see `code-review.md`).
-
 ## Stay Quiet
 
 - Focus on decision-quality gaps and high-leverage improvements.
