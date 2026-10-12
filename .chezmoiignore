@@ -1,9 +1,3 @@
-{{ if ne .role "work" }}
-.claude/memory
-.claude/history.jsonl
-.claude/projects
-{{ end }}
-
 # Ephemeral Claude runtime state — never track
 .claude/sessions
 .claude/session-env

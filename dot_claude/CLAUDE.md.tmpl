@@ -7,9 +7,6 @@
 # Global Preferences
 
 - Conventional commits (`feat:`, `fix:`, `chore:`, `docs:`, `refactor:`, `test:`)
-{{- if eq .role "work" }}
-- Render Jira tickets as full URLs: `https://ifitdev.atlassian.net/browse/OPS-3358`
-{{- end }}
 
 ## Writing Style (Skills, Prompts, CLAUDE.md, Memory)
 
@@ -133,14 +130,6 @@ When a tool call requires approval, evaluate:
 - **Remote/destructive** → never suggest
 
 Show the exact line and reason. One suggestion at a time.
-
-{{- if eq .role "work" }}
-
-# Superpowers Plugin Overrides
-
-- Specs: `~/Sync/iFIT/claude/superpowers/specs/`
-- Plans: `~/Sync/iFIT/claude/superpowers/plans/`
-{{- end }}
 
 <team_management>
 
