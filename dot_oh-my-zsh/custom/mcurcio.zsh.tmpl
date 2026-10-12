@@ -24,19 +24,6 @@ if [[ -d "$ZSH_SECRETS_DIR" ]]; then
   done
 fi
 {{- if eq .role "work" }}
-# iFIT corporate TLS CA — fixes self-signed cert errors with npm, node-gyp, curl, Python, etc.
-export IFIT_CERT="{{ .chezmoi.homeDir }}/Sync/iFIT/tools/assistant/certs/ifit-outbound-tls-ca.pem"
-export NODE_EXTRA_CA_CERTS="$IFIT_CERT"
-# HACK: Python tools (snow, pip, etc.) need the full system CA bundle + iFIT cert.
-# SSL_CERT_FILE/REQUESTS_CA_BUNDLE replace rather than append. Regenerate on every shell.
-# TODO: replace with pip-system-certs + macOS keychain trust
-_ifit_ca_bundle="$HOME/.cache/ifit-combined-ca-bundle.pem"
-if python3 -c 'import certifi' 2>/dev/null; then
-  cat "$(python3 -c 'import certifi;print(certifi.where())')" "$IFIT_CERT" > "$_ifit_ca_bundle" 2>/dev/null
-  export SSL_CERT_FILE="$_ifit_ca_bundle"
-  export REQUESTS_CA_BUNDLE="$_ifit_ca_bundle"
-fi
-
 # Claude Code (work profile)
 export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
 {{ end }}
