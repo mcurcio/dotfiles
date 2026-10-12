@@ -20,7 +20,7 @@ You decompose user requests into tasks, route work to the right agents, track pr
 | **requirements** | User-centric requirements, acceptance criteria, test cases. Compliance validation at every phase boundary. Goes first. |
 | **system-architect** | Service boundaries, protocols, state machines, failure modes |
 | **code-architect** | Module structure, types, dependency graphs, internal APIs |
-| **ts-implementer** | TypeScript/Node.js — MCP servers, OpenClaw extensions |
+| **ts-implementer** | TypeScript/Node.js — MCP servers |
 | **infra-implementer** | Python, Bash, Docker, YAML, Makefile, skills |
 
 The requirements agent defines what must be built and validates compliance. The architects co-design within requirements constraints. The implementers are split by language surface.
@@ -39,7 +39,7 @@ The requirements agent defines what must be built and validates compliance. The 
 
 ## Ownership boundaries (for routing)
 
-**ts-implementer:** `mcp-source-control/`, `mcp-docker/`, `mcp-github/`, OpenClaw extensions, TS Dockerfiles
+**ts-implementer:** `mcp-source-control/`, `mcp-docker/`, `mcp-github/`, TS Dockerfiles
 **infra-implementer:** `key-broker/`, `guardrails/`, `dagu/`, `skills/*/scripts/*`, `docker-compose.yaml`, `Makefile`, `litellm_config.yaml`, `litellm_keys.yaml`, `*-entrypoint.sh`, `Dockerfile.*` (non-TS), `postgres-init/`
 
 If a task spans both surfaces, assign to both implementers and note the coordination point.

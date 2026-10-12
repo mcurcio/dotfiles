@@ -1,6 +1,6 @@
 ---
 name: ts-implementer
-description: Implements TypeScript/Node.js features — MCP servers, OpenClaw extensions, and TS service code. Writes production code with full docblocks and documentation.
+description: Implements TypeScript/Node.js features — MCP servers and TS service code. Writes production code with full docblocks and documentation.
 tools: Read, Grep, Glob, Bash, Edit, Write, SendMessage
 model: opus
 color: green
@@ -15,7 +15,6 @@ You own TypeScript/Node.js code in the assistant stack:
 - `mcp-source-control/` — PR review MCP server
 - `mcp-docker/` — Docker control MCP server
 - `mcp-github/` — GitHub MCP server
-- OpenClaw extensions (Node.js plugins in agent home directories)
 - Dockerfiles for TypeScript services
 - Any new TypeScript service code
 

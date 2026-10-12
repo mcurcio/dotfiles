@@ -15,7 +15,7 @@ Create an agent team with six teammates:
 
 3. code-architect agent type — design the implementation architecture: module structure, types, dependency graph, build sequence. Peer with system-architect; challenge proposals that don't map to real code.
 
-4. ts-implementer agent type — implement TypeScript/Node.js code per the approved design. Owns MCP servers, OpenClaw extensions, and TS service code. Do not start until the design is approved by the user.
+4. ts-implementer agent type — implement TypeScript/Node.js code per the approved design. Owns MCP servers and TS service code. Do not start until the design is approved by the user.
 
 5. infra-implementer agent type — implement Python, Bash, Docker, YAML, Makefile, and skill CLI code per the approved design. Owns key-broker, guardrails, compose config, entrypoints, and skills. Do not start until the design is approved by the user.
 

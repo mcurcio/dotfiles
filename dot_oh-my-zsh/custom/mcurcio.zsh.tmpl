@@ -23,7 +23,3 @@ if [[ -d "$ZSH_SECRETS_DIR" ]]; then
     source "$secret_file"
   done
 fi
-{{- if eq .role "work" }}
-# Claude Code (work profile)
-export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
-{{ end }}

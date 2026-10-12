@@ -62,7 +62,6 @@ Create `~/.config/chezmoi/chezmoi.toml`:
 ```toml
 [data]
 autosync = true
-role = "personal"
 
 [data.features]
 shairport = false
@@ -145,14 +144,12 @@ If background autosync is enabled, the same drift should usually be captured and
 ## Advanced Configuration
 
 ### Profile and feature model
-- `role`: primary machine context (examples: `personal`, `work`)
-- `profiles`: optional additional tags if you want multi-profile matching later
+- `profiles`: optional machine tags for multi-profile matching
 - `features.*`: capability toggles (examples: `shairport`, `k8s`)
 
 Example:
 ```toml
 [data]
-role = "work"
 profiles = ["client-acme"]
 
 [data.features]
@@ -160,7 +157,7 @@ shairport = true
 ```
 
 ### Adding a profile
-1. Set `role` for the main machine context and optionally add tags to `profiles`.
+1. Add tags to `profiles`.
 2. Apply:
 ```bash
 make apply

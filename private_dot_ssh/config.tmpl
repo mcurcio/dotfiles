@@ -1,6 +1,4 @@
-{{ if eq .role "personal" -}}
 IdentityFile {{ .chezmoi.homeDir }}/.ssh/hawking
-{{ end -}}
 Host 10.0.2.*
   User matt
   IdentityFile ~/.ssh/joule
